@@ -1,12 +1,13 @@
 package tests
 
 import (
-	"testing"
-	"github.com/centrifuge/functional-testing/go/utils"
+	"fmt"
 	"net/http"
+	"testing"
+
+	"github.com/centrifuge/functional-testing/go/utils"
 	"github.com/gavv/httpexpect"
 	"github.com/stretchr/testify/assert"
-	"fmt"
 )
 
 func TestCreateAndUpdateInvoiceFromOrigin(t *testing.T) {
@@ -19,10 +20,10 @@ func TestCreateAndUpdateInvoiceFromOrigin(t *testing.T) {
 	payload := map[string]interface{}{
 		"data": map[string]interface{}{
 			"invoice_number": "12324",
-			"due_date": "2018-09-26T23:12:37.902198664Z",
-			"gross_amount": "40",
-			"currency": currency,
-			"net_amount": "40",
+			"due_date":       "2018-09-26T23:12:37.902198664Z",
+			"gross_amount":   "40",
+			"currency":       currency,
+			"net_amount":     "40",
 		},
 		"collaborators": []string{utils.Nodes[utils.NODE2].ID},
 	}
@@ -42,10 +43,10 @@ func TestCreateAndUpdateInvoiceFromOrigin(t *testing.T) {
 	payload = map[string]interface{}{
 		"data": map[string]interface{}{
 			"invoice_number": "12324",
-			"due_date": "2018-09-26T23:12:37.902198664Z",
-			"gross_amount": "41",
-			"currency": currency,
-			"net_amount": "41",
+			"due_date":       "2018-09-26T23:12:37.902198664Z",
+			"gross_amount":   "41",
+			"currency":       currency,
+			"net_amount":     "41",
 		},
 		"collaborators": []string{utils.Nodes[utils.NODE2].ID},
 	}
@@ -71,10 +72,10 @@ func TestCreateAndUpdateInvoiceFromCollaborator(t *testing.T) {
 	payload := map[string]interface{}{
 		"data": map[string]interface{}{
 			"invoice_number": "12324",
-			"due_date": "2018-09-26T23:12:37.902198664Z",
-			"gross_amount": "40",
-			"currency": currency,
-			"net_amount": "40",
+			"due_date":       "2018-09-26T23:12:37.902198664Z",
+			"gross_amount":   "40",
+			"currency":       currency,
+			"net_amount":     "40",
 		},
 		"collaborators": []string{utils.Nodes[utils.NODE2].ID},
 	}
@@ -94,10 +95,10 @@ func TestCreateAndUpdateInvoiceFromCollaborator(t *testing.T) {
 	payload = map[string]interface{}{
 		"data": map[string]interface{}{
 			"invoice_number": "12324",
-			"due_date": "2018-09-26T23:12:37.902198664Z",
-			"gross_amount": "41",
-			"currency": currency,
-			"net_amount": "41",
+			"due_date":       "2018-09-26T23:12:37.902198664Z",
+			"gross_amount":   "41",
+			"currency":       currency,
+			"net_amount":     "41",
 		},
 		"collaborators": []string{utils.Nodes[utils.NODE1].ID},
 	}
@@ -122,11 +123,11 @@ func TestCreateAndUpdatePurchaseOrderFromOrigin(t *testing.T) {
 	currency := "USD"
 	payload := map[string]interface{}{
 		"data": map[string]interface{}{
-			"po_number": "12324",
+			"po_number":     "12324",
 			"delivery_date": "2018-09-26T23:12:37.902198664Z",
-			"tax_amount": "40",
-			"currency": currency,
-			"net_amount": "40",
+			"tax_amount":    "40",
+			"currency":      currency,
+			"net_amount":    "40",
 		},
 		"collaborators": []string{utils.Nodes[utils.NODE2].ID},
 	}
@@ -145,11 +146,11 @@ func TestCreateAndUpdatePurchaseOrderFromOrigin(t *testing.T) {
 	// update invoice
 	payload = map[string]interface{}{
 		"data": map[string]interface{}{
-			"po_number": "12324",
+			"po_number":     "12324",
 			"delivery_date": "2018-09-26T23:12:37.902198664Z",
-			"tax_amount": "41",
-			"currency": currency,
-			"net_amount": "41",
+			"tax_amount":    "41",
+			"currency":      currency,
+			"net_amount":    "41",
 		},
 		"collaborators": []string{utils.Nodes[utils.NODE2].ID},
 	}
@@ -174,11 +175,11 @@ func TestCreateAndUpdatePurchaseOrderFromCollaborator(t *testing.T) {
 	currency := "USD"
 	payload := map[string]interface{}{
 		"data": map[string]interface{}{
-			"po_number": "12324",
-			"due_date": "2018-09-26T23:12:37.902198664Z",
+			"po_number":    "12324",
+			"due_date":     "2018-09-26T23:12:37.902198664Z",
 			"gross_amount": "40",
-			"currency": currency,
-			"net_amount": "40",
+			"currency":     currency,
+			"net_amount":   "40",
 		},
 		"collaborators": []string{utils.Nodes[utils.NODE2].ID},
 	}
@@ -197,11 +198,11 @@ func TestCreateAndUpdatePurchaseOrderFromCollaborator(t *testing.T) {
 	// update invoice
 	payload = map[string]interface{}{
 		"data": map[string]interface{}{
-			"po_number": "12324",
+			"po_number":     "12324",
 			"delivery_date": "2018-09-26T23:12:37.902198664Z",
-			"tax_amount": "41",
-			"currency": currency,
-			"net_amount": "41",
+			"tax_amount":    "41",
+			"currency":      currency,
+			"net_amount":    "41",
 		},
 		"collaborators": []string{utils.Nodes[utils.NODE1].ID},
 	}
@@ -228,23 +229,27 @@ func GetDocument(t *testing.T, docType string, e *httpexpect.Expect, docIdentifi
 }
 
 func CreateDocument(t *testing.T, docType string, e *httpexpect.Expect, payload map[string]interface{}) *httpexpect.Object {
-	resp := e.POST(fmt.Sprintf("/%s", docType)).
-		WithHeader("accept", "application/json").
-		WithHeader("Content-Type", "application/json").
-		WithJSON(payload).
-		Expect().Status(http.StatusOK)
+	path := fmt.Sprintf("/%s", docType)
+	method := "POST"
+	resp := getResponse(method, path, e, payload).Status(http.StatusOK)
 	assertOkResponse(t, resp)
 	return resp.JSON().Object()
 }
 
 func UpdateDocument(t *testing.T, docType string, e *httpexpect.Expect, documentID string, payload map[string]interface{}) *httpexpect.Object {
-	resp := e.PUT(fmt.Sprintf("/%s/%s", docType, documentID)).
+	path := fmt.Sprintf("/%s/%s", docType, documentID)
+	method := "PUT"
+	resp := getResponse(method, path, e, payload).Status(http.StatusOK)
+	assertOkResponse(t, resp)
+	return resp.JSON().Object()
+}
+
+func getResponse(method, path string, e *httpexpect.Expect, payload map[string]interface{}) *httpexpect.Response {
+	return e.Request(method, path).
 		WithHeader("accept", "application/json").
 		WithHeader("Content-Type", "application/json").
 		WithJSON(payload).
-		Expect().Status(http.StatusOK)
-	assertOkResponse(t, resp)
-	return resp.JSON().Object()
+		Expect()
 }
 
 func assertOkResponse(t *testing.T, response *httpexpect.Response) {

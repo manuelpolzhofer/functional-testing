@@ -3,14 +3,15 @@ package utils
 import (
 	"os"
 	"strings"
-	"github.com/gavv/httpexpect"
 	"testing"
+
+	"github.com/gavv/httpexpect"
 )
 
 const (
-	NODE1 = "node1"
-	NODE2 = "node2"
-	INVOICE = "invoice"
+	NODE1         = "node1"
+	NODE2         = "node2"
+	INVOICE       = "invoice"
 	PURCHASEORDER = "purchaseorder"
 )
 
@@ -36,7 +37,7 @@ func SetupEnvironment() {
 		idsSlice = append(idsSlice, "0x8c8cfaf732d3", "0x24fe6555beb9")
 	}
 
-	Nodes = map[string]node {
+	Nodes = map[string]node{
 		NODE1: {
 			idsSlice[0],
 			nodesSlice[0],

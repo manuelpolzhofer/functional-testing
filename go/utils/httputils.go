@@ -1,11 +1,12 @@
 package utils
 
 import (
-	"github.com/gavv/httpexpect"
-	"net/http"
 	"crypto/tls"
+	"net/http"
 	"testing"
 	"time"
+
+	"github.com/gavv/httpexpect"
 )
 
 func CreateInsecureClient(t *testing.T, baseURL string) *httpexpect.Expect {
@@ -13,8 +14,8 @@ func CreateInsecureClient(t *testing.T, baseURL string) *httpexpect.Expect {
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
 	config := httpexpect.Config{
-		BaseURL:  baseURL,
-		Client:   &http.Client{
+		BaseURL: baseURL,
+		Client: &http.Client{
 			Transport: transport,
 			Timeout:   time.Minute * 20,
 		},

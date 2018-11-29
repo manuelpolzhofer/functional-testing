@@ -1,8 +1,9 @@
 package tests
 
 import (
-	"testing"
 	"net/http"
+	"testing"
+
 	"github.com/centrifuge/functional-testing/go/utils"
 )
 
