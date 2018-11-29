@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"fmt"
 	"net/http"
 	"testing"
 
@@ -30,10 +31,18 @@ func createDocumentForNFT(t *testing.T) *httpexpect.Object {
 }
 
 func TestPaymentObligationMint_Errors(t *testing.T) {
-	node1 := utils.GetInsecureClient(t, utils.NODE1)
+	expectedNode1 := utils.GetInsecureClient(t, utils.NODE1)
 
-	// docObj := createDocumentForNFT(t)
-	// documentId := docObj.Value("header").Object().Value("document_id").String().Raw()
+	//docObj := createDocumentForNFT(t)
+	//documentId := docObj.Value("header").Object().Value("document_id").String().Raw()
+
+	documentId := "0xc7f569f394c9da863949b26891db5f781f7d0f8cbb60a3748518a1f8c1803117"
+	fmt.Println("document Id")
+	fmt.Println(documentId)
+
+
+	inv := GetDocument(t,utils.INVOICE,expectedNode1,documentId)
+	fmt.Println(inv.Raw())
 
 	tests := []struct {
 		errorMsg   string
@@ -67,7 +76,7 @@ func TestPaymentObligationMint_Errors(t *testing.T) {
 				"depositAddress":  "0xf72855759a39fb75fc7341139f5d7a3974d4da08",
 			},
 		},
-		/*{
+		{
 			"proof_fields should contain a collaborator",
 			http.StatusInternalServerError,
 			map[string]interface{}{
@@ -75,16 +84,29 @@ func TestPaymentObligationMint_Errors(t *testing.T) {
 				"identifier": documentId,
 				"registryAddress": "0xf72855759a39fb75fc7341139f5d7a3974d4da08",
 				"depositAddress": "0xf72855759a39fb75fc7341139f5d7a3974d4da08",
-				"proofFields":    []string{"gross_amount", "due_date", "currency"},
+
+			},
+
+		},
+		{
+			"proof_fields should contain a collaborator",
+			http.StatusInternalServerError,
+			map[string]interface{}{
+
+				"identifier": documentId,
+				"registryAddress": "0xf72855759a39fb75fc7341139f5d7a3974d4da08",
+				"depositAddress": "0xf72855759a39fb75fc7341139f5d7a3974d4da08",
+				"proofFields":    []string{"gross_amount", "currency", "due_date", "document_type", "collaborators[0]"},
 
 			},
 
 
-		},*/
+
+		},
 	}
 
 	for _, test := range tests {
-		httpObj := PostTokenMint(node1, test.httpStatus, test.payload)
+		httpObj := PostTokenMint(expectedNode1, test.httpStatus, test.payload)
 		httpObj.Value("message").String().Contains(test.errorMsg)
 
 	}
