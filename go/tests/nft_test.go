@@ -1,6 +1,8 @@
 package tests
 
 import (
+	"fmt"
+	"net/http"
 	"testing"
 
 	"github.com/centrifuge/functional-testing/go/utils"
@@ -32,14 +34,9 @@ func createDocumentForNFT(t *testing.T) *httpexpect.Object {
 
 func TestPaymentObligationMint_successful(t *testing.T) {
 
-	utils.GetConfig()
+	/*
+	utils.GetInsecureClient(t, utils.NODE1)
 
-
-
-
-	//fmt.Println(reflections.GetField(config, "Rinkeby")
-	//fmt.Println(config["Rinkeby"].ContractAddresses.PaymentObligation)
-/*
 	expectedNode1 := utils.GetInsecureClient(t, utils.NODE1)
 
 	docObj := createDocumentForNFT(t)
@@ -54,7 +51,7 @@ func TestPaymentObligationMint_successful(t *testing.T) {
 		map[string]interface{}{
 
 			"identifier": documentId,
-			"registryAddress": config.Rinkeby.ContractAddresses.PaymentObligation,
+			"registryAddress": utils.GetPaymentObigationAddress(),
 			"depositAddress": "0xf72855759a39fb75fc7341139f5d7a3974d4da08", // dummy address
 			"proofFields":    []string{"invoice.gross_amount", "invoice.currency", "invoice.due_date", "collaborators[0]"},
 
@@ -63,20 +60,16 @@ func TestPaymentObligationMint_successful(t *testing.T) {
 	}
 
 	PostTokenMint(expectedNode1, test.httpStatus, test.payload)
-*/
+	*/
+
 }
 
-/*
+
 func TestPaymentObligationMint_errors(t *testing.T) {
 	expectedNode1 := utils.GetInsecureClient(t, utils.NODE1)
 
-
-	//docObj := createDocumentForNFT(t)
-	//documentId := docObj.Value("header").Object().Value("document_id").String().Raw()
-
-	documentId := "0x6e05c2816b8a84b7f0d22f86887319b8a50d67fd1a585c7b7a247666cf7a5141"
-	fmt.Println("document Id")
-	fmt.Println(documentId)
+	docObj := createDocumentForNFT(t)
+	documentId := docObj.Value("header").Object().Value("document_id").String().Raw()
 
 
 	inv := GetDocument(t,utils.INVOICE,expectedNode1,documentId)
@@ -135,7 +128,7 @@ func TestPaymentObligationMint_errors(t *testing.T) {
 	}
 
 }
-*/
+
 func PostTokenMint(e *httpexpect.Expect, httpStatus int, payload map[string]interface{}) *httpexpect.Object {
 	resp := e.POST("/token/mint").
 		WithHeader("accept", "application/json").
