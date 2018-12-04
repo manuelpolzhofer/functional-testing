@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"fmt"
+	"github.com/oleiade/reflections"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
@@ -27,6 +29,13 @@ type node struct {
 	HOST string
 }
 
+
+type testnet struct {
+	ContractAddresses struct{
+		PaymentObligation string `yaml:"paymentObligation"`
+	}`yaml:"contractAddresses"`
+}
+
 type config struct {
 
 	Nodes string `yaml:"nodes"`
@@ -34,18 +43,8 @@ type config struct {
 
 	Namespace string `yaml:"namespace"`
 
-	Rinkeby struct {
-		ContractAddresses struct {
-			PaymentObligation string `yaml:"paymentObligation"`
-
-		}`yaml:"contractAddresses"`
-	}`yaml:"rinkeby"`
-	Kovan struct {
-		ContractAddresses struct {
-			PaymentObligation string `yaml:"paymentObligation"`
-
-		}`yaml:"contractAddresses"`
-	} `yaml:"kovan"`
+	Rinkeby testnet `yaml:"rinkeby"`
+	Kovan testnet `yaml:"kovan"`
 }
 
 func SetupEnvironment() {
@@ -87,6 +86,18 @@ func GetConfig() config{
 	err = yaml.Unmarshal(yamlFile, &c)
 	if err != nil {
 		panic(err)
+	}
+
+	n, err := reflections.GetField(c, "Rinkeby")
+
+	fmt.Println(n)
+
+
+
+	a, ok := n.(testnet)
+	if ok {
+		fmt.Println("paymentObligation")
+		fmt.Println(a.ContractAddresses.PaymentObligation)
 	}
 
 	return c

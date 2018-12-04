@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"net/http"
 	"testing"
 
 	"github.com/centrifuge/functional-testing/go/utils"
@@ -33,8 +32,14 @@ func createDocumentForNFT(t *testing.T) *httpexpect.Object {
 
 func TestPaymentObligationMint_successful(t *testing.T) {
 
-	config:= utils.GetConfig()
+	utils.GetConfig()
 
+
+
+
+	//fmt.Println(reflections.GetField(config, "Rinkeby")
+	//fmt.Println(config["Rinkeby"].ContractAddresses.PaymentObligation)
+/*
 	expectedNode1 := utils.GetInsecureClient(t, utils.NODE1)
 
 	docObj := createDocumentForNFT(t)
@@ -58,6 +63,7 @@ func TestPaymentObligationMint_successful(t *testing.T) {
 	}
 
 	PostTokenMint(expectedNode1, test.httpStatus, test.payload)
+*/
 }
 
 /*
