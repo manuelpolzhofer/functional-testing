@@ -2,12 +2,13 @@ package utils
 
 import (
 	"fmt"
-	"github.com/oleiade/reflections"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
 	"strings"
 	"testing"
+
+	"github.com/oleiade/reflections"
+	"gopkg.in/yaml.v2"
 
 	"github.com/gavv/httpexpect"
 )
@@ -32,28 +33,27 @@ type node struct {
 }
 
 type testnet struct {
-	ContractAddresses struct{
+	ContractAddresses struct {
 		PaymentObligation string `yaml:"paymentObligation"`
-	}`yaml:"contractAddresses"`
+	} `yaml:"contractAddresses"`
 }
 
 type network struct {
-	Nodes string `yaml:"nodes"`
+	Nodes    string `yaml:"nodes"`
 	Testnets struct {
 		Rinkeby testnet `yaml:"rinkeby"`
-		Kovan testnet `yaml:"kovan"`
-	}`yaml:"testnets"`
+		Kovan   testnet `yaml:"kovan"`
+	} `yaml:"testnets"`
 }
 
 type config struct {
-
-	Nodes string `yaml:"nodes"`
+	Nodes   string `yaml:"nodes"`
 	Network string `yaml:"network"`
 
 	Namespace string `yaml:"namespace"`
 
 	Networks struct {
-		Russianhill network `yaml:"russianhill"`
+		Russianhill   network `yaml:"russianhill"`
 		Bernalheights network `yaml:"bernalheights"`
 	}
 }
@@ -97,14 +97,13 @@ func SetupEnvironment() {
 	var err error
 	testNetwork, err := getNetwork(testConfig, Network)
 
-	if err != nil{
+	if err != nil {
 		panic(err)
 	}
 
 	testNet, err = getTestNet(testNetwork, Testnet)
 
 }
-
 
 func readConfig() config {
 
@@ -123,7 +122,7 @@ func getTestNet(network *network, testnetName string) (*testnet, error) {
 
 	t, err := reflections.GetField(network.Testnets, strings.Title(testnetName))
 	if err != nil {
-		return nil ,err
+		return nil, err
 	}
 
 	testNet, ok := t.(testnet)
@@ -135,12 +134,11 @@ func getTestNet(network *network, testnetName string) (*testnet, error) {
 
 }
 
-
 func getNetwork(config config, networkName string) (*network, error) {
 
 	testNetwork, err := reflections.GetField(config.Networks, strings.Title(networkName))
 	if err != nil {
-		return nil ,err
+		return nil, err
 	}
 
 	t, ok := testNetwork.(network)
@@ -151,7 +149,6 @@ func getNetwork(config config, networkName string) (*network, error) {
 	return nil, fmt.Errorf("could not parse network name")
 
 }
-
 
 func GetPaymentObigationAddress() string {
 

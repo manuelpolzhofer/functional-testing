@@ -1,9 +1,10 @@
 package tests
 
 import (
-	"fmt"
 	"net/http"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 
 	"github.com/centrifuge/functional-testing/go/utils"
 	"github.com/gavv/httpexpect"
@@ -20,7 +21,7 @@ func createDocumentForNFT(t *testing.T) *httpexpect.Object {
 			"gross_amount":   "40",
 			"currency":       "USD",
 			"net_amount":     "40",
-			"document_type": "invoice",
+			"document_type":  "invoice",
 		},
 		"collaborators": []string{utils.Nodes[utils.NODE2].ID},
 	}
@@ -31,10 +32,9 @@ func createDocumentForNFT(t *testing.T) *httpexpect.Object {
 
 }
 
-
 func TestPaymentObligationMint_successful(t *testing.T) {
 
-	/*
+	const tokenIdLength = 77
 	utils.GetInsecureClient(t, utils.NODE1)
 
 	expectedNode1 := utils.GetInsecureClient(t, utils.NODE1)
@@ -47,33 +47,23 @@ func TestPaymentObligationMint_successful(t *testing.T) {
 		payload    map[string]interface{}
 	}{
 		"",
-		http.StatusAccepted,
+		http.StatusOK,
 		map[string]interface{}{
 
-			"identifier": documentId,
+			"identifier":      documentId,
 			"registryAddress": utils.GetPaymentObigationAddress(),
-			"depositAddress": "0xf72855759a39fb75fc7341139f5d7a3974d4da08", // dummy address
-			"proofFields":    []string{"invoice.gross_amount", "invoice.currency", "invoice.due_date", "collaborators[0]"},
-
+			"depositAddress":  "0xf72855759a39fb75fc7341139f5d7a3974d4da08", // dummy address
+			"proofFields":     []string{"invoice.gross_amount", "invoice.currency", "invoice.due_date", "collaborators[0]"},
 		},
-
 	}
 
-	PostTokenMint(expectedNode1, test.httpStatus, test.payload)
-	*/
+	response := PostTokenMint(expectedNode1, test.httpStatus, test.payload)
+	assert.True(t, len(response.Value("token_id").String().Raw()) >= tokenIdLength, "successful tokenId should have length 77")
 
 }
 
-
 func TestPaymentObligationMint_errors(t *testing.T) {
 	expectedNode1 := utils.GetInsecureClient(t, utils.NODE1)
-
-	docObj := createDocumentForNFT(t)
-	documentId := docObj.Value("header").Object().Value("document_id").String().Raw()
-
-
-	inv := GetDocument(t,utils.INVOICE,expectedNode1,documentId)
-	fmt.Println(inv.Raw())
 
 	tests := []struct {
 		errorMsg   string
@@ -106,18 +96,6 @@ func TestPaymentObligationMint_errors(t *testing.T) {
 				"registryAddress": "0xf72855759a39fb75fc7341139f5d7a3974d4da08", //dummy address
 				"depositAddress":  "0xf72855759a39fb75fc7341139f5d7a3974d4da08", //dummy address
 			},
-		},
-		{
-			"proof_fields should contain a collaborator",
-			http.StatusInternalServerError,
-			map[string]interface{}{
-
-				"identifier": documentId,
-				"registryAddress": "0xf72855759a39fb75fc7341139f5d7a3974d4da08", //dummy address
-				"depositAddress": "0xf72855759a39fb75fc7341139f5d7a3974d4da08", //dummy address
-
-			},
-
 		},
 	}
 
