@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"fmt"
 	"net/http"
 	"testing"
 
@@ -20,6 +19,7 @@ func createDocumentForNFT(t *testing.T) *httpexpect.Object {
 			"gross_amount":   "40",
 			"currency":       "USD",
 			"net_amount":     "40",
+			"document_type": "invoice",
 		},
 		"collaborators": []string{utils.Nodes[utils.NODE2].ID},
 	}
@@ -30,13 +30,45 @@ func createDocumentForNFT(t *testing.T) *httpexpect.Object {
 
 }
 
-func TestPaymentObligationMint_Errors(t *testing.T) {
+
+func TestPaymentObligationMint_successful(t *testing.T) {
+
+	config:= utils.GetConfig()
+
 	expectedNode1 := utils.GetInsecureClient(t, utils.NODE1)
+
+	docObj := createDocumentForNFT(t)
+	documentId := docObj.Value("header").Object().Value("document_id").String().Raw()
+	test := struct {
+		errorMsg   string
+		httpStatus int
+		payload    map[string]interface{}
+	}{
+		"",
+		http.StatusAccepted,
+		map[string]interface{}{
+
+			"identifier": documentId,
+			"registryAddress": config.Rinkeby.ContractAddresses.PaymentObligation,
+			"depositAddress": "0xf72855759a39fb75fc7341139f5d7a3974d4da08", // dummy address
+			"proofFields":    []string{"invoice.gross_amount", "invoice.currency", "invoice.due_date", "collaborators[0]"},
+
+		},
+
+	}
+
+	PostTokenMint(expectedNode1, test.httpStatus, test.payload)
+}
+
+/*
+func TestPaymentObligationMint_errors(t *testing.T) {
+	expectedNode1 := utils.GetInsecureClient(t, utils.NODE1)
+
 
 	//docObj := createDocumentForNFT(t)
 	//documentId := docObj.Value("header").Object().Value("document_id").String().Raw()
 
-	documentId := "0xc7f569f394c9da863949b26891db5f781f7d0f8cbb60a3748518a1f8c1803117"
+	documentId := "0x6e05c2816b8a84b7f0d22f86887319b8a50d67fd1a585c7b7a247666cf7a5141"
 	fmt.Println("document Id")
 	fmt.Println(documentId)
 
@@ -62,7 +94,7 @@ func TestPaymentObligationMint_Errors(t *testing.T) {
 			http.StatusInternalServerError,
 			map[string]interface{}{
 
-				"registryAddress": "0xf72855759a39fb75fc7341139f5d7a3974d4da08",
+				"registryAddress": "0xf72855759a39fb75fc7341139f5d7a3974d4da08", //dummy address
 				"depositAddress":  "abc",
 			},
 		},
@@ -72,8 +104,8 @@ func TestPaymentObligationMint_Errors(t *testing.T) {
 			map[string]interface{}{
 
 				"identifier":      "0x12121212",
-				"registryAddress": "0xf72855759a39fb75fc7341139f5d7a3974d4da08",
-				"depositAddress":  "0xf72855759a39fb75fc7341139f5d7a3974d4da08",
+				"registryAddress": "0xf72855759a39fb75fc7341139f5d7a3974d4da08", //dummy address
+				"depositAddress":  "0xf72855759a39fb75fc7341139f5d7a3974d4da08", //dummy address
 			},
 		},
 		{
@@ -82,25 +114,10 @@ func TestPaymentObligationMint_Errors(t *testing.T) {
 			map[string]interface{}{
 
 				"identifier": documentId,
-				"registryAddress": "0xf72855759a39fb75fc7341139f5d7a3974d4da08",
-				"depositAddress": "0xf72855759a39fb75fc7341139f5d7a3974d4da08",
+				"registryAddress": "0xf72855759a39fb75fc7341139f5d7a3974d4da08", //dummy address
+				"depositAddress": "0xf72855759a39fb75fc7341139f5d7a3974d4da08", //dummy address
 
 			},
-
-		},
-		{
-			"proof_fields should contain a collaborator",
-			http.StatusInternalServerError,
-			map[string]interface{}{
-
-				"identifier": documentId,
-				"registryAddress": "0xf72855759a39fb75fc7341139f5d7a3974d4da08",
-				"depositAddress": "0xf72855759a39fb75fc7341139f5d7a3974d4da08",
-				"proofFields":    []string{"gross_amount", "currency", "due_date", "document_type", "collaborators[0]"},
-
-			},
-
-
 
 		},
 	}
@@ -112,7 +129,7 @@ func TestPaymentObligationMint_Errors(t *testing.T) {
 	}
 
 }
-
+*/
 func PostTokenMint(e *httpexpect.Expect, httpStatus int, payload map[string]interface{}) *httpexpect.Object {
 	resp := e.POST("/token/mint").
 		WithHeader("accept", "application/json").

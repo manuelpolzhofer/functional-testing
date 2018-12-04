@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"gopkg.in/yaml.v2"
+	"io/ioutil"
 	"os"
 	"strings"
 	"testing"
@@ -18,9 +20,32 @@ const (
 var Nodes map[string]node
 var Network string
 
+var configFilePath = "../../kubernetes/helm/functional-testing/values/test.yaml"
+
 type node struct {
 	ID   string
 	HOST string
+}
+
+type config struct {
+
+	Nodes string `yaml:"nodes"`
+	Network string `yaml:"network"`
+
+	Namespace string `yaml:"namespace"`
+
+	Rinkeby struct {
+		ContractAddresses struct {
+			PaymentObligation string `yaml:"paymentObligation"`
+
+		}`yaml:"contractAddresses"`
+	}`yaml:"rinkeby"`
+	Kovan struct {
+		ContractAddresses struct {
+			PaymentObligation string `yaml:"paymentObligation"`
+
+		}`yaml:"contractAddresses"`
+	} `yaml:"kovan"`
 }
 
 func SetupEnvironment() {
@@ -53,6 +78,18 @@ func SetupEnvironment() {
 		Network = "testing"
 	}
 
+}
+
+func GetConfig() config{
+
+	var c config
+	yamlFile, err := ioutil.ReadFile(configFilePath)
+	err = yaml.Unmarshal(yamlFile, &c)
+	if err != nil {
+		panic(err)
+	}
+
+	return c
 }
 
 func GetInsecureClient(t *testing.T, nodeId string) *httpexpect.Expect {

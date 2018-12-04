@@ -8,3 +8,12 @@ network: 'russianhill'
 
 namespace: default
 
+rinkeby:
+  contractAddresses:
+    paymentObligation: "0x691280677b52e3ca71e023eed2d83fa9fac3b64b"
+
+kovan:
+  contractAddresses:
+    paymentObligation: "0xa3d3b45f422016201d7cd4c2bc217665483d90e6"
+
+
