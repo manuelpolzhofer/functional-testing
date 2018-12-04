@@ -14,19 +14,13 @@ networks:
     testnets:
       rinkeby:
         contractAddresses:
-          paymentObligation: "0x691280677b52e3ca71e023eed2d83fa9fac3b64b"
-      kovan:
-        contractAddresses:
-          paymentObligation: "0xa3d3b45f422016201d7cd4c2bc217665483d90e6"
+          paymentObligation: "0xdb0581A9328664855328AdDb0E251184640f9e5D"
 
 
   bernalheights:
     nodes: 'https://35.184.66.29:8082,https://35.184.39.100:8082'
     testnets:
-      rinkeby:
-        contractAddresses:
-          paymentObligation: "0x"
       kovan:
         contractAddresses:
-          paymentObligation: "0xa3d3b45f422016201d7cd4c2bc217665483d90e6"
+          paymentObligation: "0x0417eb37941164368401D666984cED7694ABcBb1"
 

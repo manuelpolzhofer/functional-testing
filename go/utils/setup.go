@@ -24,8 +24,6 @@ var Network string
 var Testnet string
 
 var configFilePath = "../../kubernetes/helm/functional-testing/values/test.yaml"
-var testConfig config
-var testNetwork *network
 var testNet *testnet
 
 type node struct {
@@ -87,7 +85,7 @@ func SetupEnvironment() {
 
 	Network = os.Getenv("NETWORK")
 	if Network == "" {
-		Network = "testing"
+		Network = "russianhill"
 	}
 
 	Testnet = os.Getenv("TESTNET")
@@ -95,17 +93,15 @@ func SetupEnvironment() {
 		Testnet = "rinkeby"
 	}
 
-	testConfig = readConfig()
+	testConfig := readConfig()
 	var err error
-	testNetwork, err = getNetwork(testConfig, Network)
+	testNetwork, err := getNetwork(testConfig, Network)
 
 	if err != nil{
 		panic(err)
 	}
 
 	testNet, err = getTestNet(testNetwork, Testnet)
-
-
 
 }
 
@@ -125,7 +121,7 @@ func readConfig() config {
 
 func getTestNet(network *network, testnetName string) (*testnet, error) {
 
-	t, err := reflections.GetField(network.Testnets, testnetName)
+	t, err := reflections.GetField(network.Testnets, strings.Title(testnetName))
 	if err != nil {
 		return nil ,err
 	}
@@ -142,7 +138,7 @@ func getTestNet(network *network, testnetName string) (*testnet, error) {
 
 func getNetwork(config config, networkName string) (*network, error) {
 
-	testNetwork, err := reflections.GetField(config.Networks, networkName)
+	testNetwork, err := reflections.GetField(config.Networks, strings.Title(networkName))
 	if err != nil {
 		return nil ,err
 	}
