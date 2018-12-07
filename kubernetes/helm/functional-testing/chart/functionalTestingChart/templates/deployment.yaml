@@ -13,6 +13,8 @@ spec:
               value: {{ $.Values.nodes }}
             - name: NETWORK
               value: {{ $.Values.network }}
+            - name: CONTRACT_PAYMENT_OBLIGATION
+              value: {{ $.Values.contracts.paymentObligation}}
           image: 'centrifugeio/functional-testing:latest'
           imagePullPolicy: Always
           name: functional-testing

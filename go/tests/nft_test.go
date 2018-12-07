@@ -51,7 +51,7 @@ func TestPaymentObligationMint_successful(t *testing.T) {
 		map[string]interface{}{
 
 			"identifier":      documentId,
-			"registryAddress": utils.GetPaymentObigationAddress(),
+			"registryAddress": utils.Contracts.PaymentObligation,
 			"depositAddress":  "0xf72855759a39fb75fc7341139f5d7a3974d4da08", // dummy address
 			"proofFields":     []string{"invoice.gross_amount", "invoice.currency", "invoice.due_date", "collaborators[0]"},
 		},

@@ -2,11 +2,13 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-nodes: ''
+nodes: 'https://35.184.66.29:8082,https://35.184.39.100:8082'
 
 network: 'russianhill'
 
 namespace: default
 
-contracts:
+contractAddresses:
   paymentObligation: "0xdb0581A9328664855328AdDb0E251184640f9e5D"
+
+

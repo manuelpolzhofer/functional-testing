@@ -2,11 +2,11 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-nodes: ''
+nodes: '' # add bootnodes
 
-network: 'russianhill'
+network: 'bernalheights'
 
 namespace: default
 
-contracts:
-  paymentObligation: "0xdb0581A9328664855328AdDb0E251184640f9e5D"
+contractAddresses:
+  paymentObligation: "0x0417eb37941164368401D666984cED7694ABcBb1"

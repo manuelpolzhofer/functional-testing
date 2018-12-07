@@ -1,14 +1,9 @@
 package utils
 
 import (
-	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 	"testing"
-
-	"github.com/oleiade/reflections"
-	"gopkg.in/yaml.v2"
 
 	"github.com/gavv/httpexpect"
 )
@@ -22,41 +17,17 @@ const (
 
 var Nodes map[string]node
 var Network string
-var Testnet string
-
-var configFilePath = "../../kubernetes/helm/functional-testing/values/test.yaml"
-var testNet *testnet
 
 type node struct {
 	ID   string
 	HOST string
 }
 
-type testnet struct {
-	ContractAddresses struct {
-		PaymentObligation string `yaml:"paymentObligation"`
-	} `yaml:"contractAddresses"`
+type contracts struct {
+	PaymentObligation string
 }
 
-type network struct {
-	Nodes    string `yaml:"nodes"`
-	Testnets struct {
-		Rinkeby testnet `yaml:"rinkeby"`
-		Kovan   testnet `yaml:"kovan"`
-	} `yaml:"testnets"`
-}
-
-type config struct {
-	Nodes   string `yaml:"nodes"`
-	Network string `yaml:"network"`
-
-	Namespace string `yaml:"namespace"`
-
-	Networks struct {
-		Russianhill   network `yaml:"russianhill"`
-		Bernalheights network `yaml:"bernalheights"`
-	}
-}
+var Contracts contracts
 
 func SetupEnvironment() {
 	nodesEnv := os.Getenv("NODES")
@@ -88,71 +59,9 @@ func SetupEnvironment() {
 		Network = "russianhill"
 	}
 
-	Testnet = os.Getenv("TESTNET")
-	if Testnet == "" {
-		Testnet = "rinkeby"
-	}
+	paymentObligation := os.Getenv("CONTRACT_PAYMENT_OBLIGATION")
+	Contracts.PaymentObligation = paymentObligation
 
-	testConfig := readConfig()
-	var err error
-	testNetwork, err := getNetwork(testConfig, Network)
-
-	if err != nil {
-		panic(err)
-	}
-
-	testNet, err = getTestNet(testNetwork, Testnet)
-
-}
-
-func readConfig() config {
-
-	var c config
-	yamlFile, err := ioutil.ReadFile(configFilePath)
-	err = yaml.Unmarshal(yamlFile, &c)
-	if err != nil {
-		panic(err)
-	}
-
-	return c
-
-}
-
-func getTestNet(network *network, testnetName string) (*testnet, error) {
-
-	t, err := reflections.GetField(network.Testnets, strings.Title(testnetName))
-	if err != nil {
-		return nil, err
-	}
-
-	testNet, ok := t.(testnet)
-	if ok {
-		return &testNet, nil
-	}
-
-	return nil, fmt.Errorf("could not parse testnet name")
-
-}
-
-func getNetwork(config config, networkName string) (*network, error) {
-
-	testNetwork, err := reflections.GetField(config.Networks, strings.Title(networkName))
-	if err != nil {
-		return nil, err
-	}
-
-	t, ok := testNetwork.(network)
-	if ok {
-		return &t, nil
-	}
-
-	return nil, fmt.Errorf("could not parse network name")
-
-}
-
-func GetPaymentObigationAddress() string {
-
-	return testNet.ContractAddresses.PaymentObligation
 }
 
 func GetInsecureClient(t *testing.T, nodeId string) *httpexpect.Expect {
