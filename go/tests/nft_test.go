@@ -48,7 +48,7 @@ func TestCreateInvoiceUnpaidNFT(t *testing.T) {
 }
 
 func MintInvoiceUnpaidNFT(t *testing.T, e *httpexpect.Expect, auth string, payload map[string]interface{}) *httpexpect.Object {
-	path := fmt.Sprintf("/token/mint/invoice/unpaid/%s", payload["identifier"])
+	path := fmt.Sprintf("/nfts/%s/invoice/unpaid/mint", payload["identifier"])
 	method := "POST"
 	resp := getResponse(method, path, e, auth, payload).Status(http.StatusOK)
 	assertOkResponse(t, resp)
